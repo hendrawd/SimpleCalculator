@@ -91,19 +91,15 @@ public class MainActivity extends AppCompatActivity {
         double secondNumber = Double.parseDouble(etResult.getText().toString());
         if (flagAdd) {
             firstNumber += secondNumber;
-            flagAdd = false;
         }
         if (flagSubtract) {
             firstNumber -= secondNumber;
-            flagSubtract = false;
         }
         if (flagMultiply) {
             firstNumber *= secondNumber;
-            flagMultiply = false;
         }
         if (flagDivide) {
             firstNumber /= secondNumber;
-            flagDivide = false;
         }
         etResult.setText(formatResult(firstNumber));
         flagNew = true;
@@ -115,7 +111,9 @@ public class MainActivity extends AppCompatActivity {
             firstNumber = Double.parseDouble(etResult.getText().toString());
             flagFirstNumber = false;
         } else {
-            showResult(null);
+            double secondNumber = Double.parseDouble(etResult.getText().toString());
+            firstNumber += secondNumber;
+            etResult.setText(formatResult(firstNumber));
         }
         flagNew = true;
     }
@@ -126,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
             firstNumber = Double.parseDouble(etResult.getText().toString());
             flagFirstNumber = false;
         } else {
-            showResult(null);
+            double secondNumber = Double.parseDouble(etResult.getText().toString());
+            firstNumber -= secondNumber;
+            etResult.setText(formatResult(firstNumber));
         }
         flagNew = true;
     }
@@ -137,7 +137,9 @@ public class MainActivity extends AppCompatActivity {
             firstNumber = Double.parseDouble(etResult.getText().toString());
             flagFirstNumber = false;
         } else {
-            showResult(null);
+            double secondNumber = Double.parseDouble(etResult.getText().toString());
+            firstNumber *= secondNumber;
+            etResult.setText(formatResult(firstNumber));
         }
         flagNew = true;
     }
@@ -148,9 +150,17 @@ public class MainActivity extends AppCompatActivity {
             firstNumber = Double.parseDouble(etResult.getText().toString());
             flagFirstNumber = false;
         } else {
-            showResult(null);
+            double secondNumber = Double.parseDouble(etResult.getText().toString());
+            firstNumber /= secondNumber;
+            etResult.setText(formatResult(firstNumber));
         }
         flagNew = true;
+    }
+
+    public void switchPositiveNegative(View view) {
+    }
+
+    public void doPercent(View view) {
     }
 
     public void doC(View view) {
