@@ -1,8 +1,7 @@
 package iak.kalkulator;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,9 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText etResult;
     private double firstNumber = 0;
-    private double secondNumber = 0;
-    boolean number1Available = false;
-    boolean number2Available = false;
+    boolean flagAdd, flagSubtract, flagMultiply, flagDivide, flagNew = true, flagFirstNumber = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,72 +25,61 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        return false;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
     private void addToEditText(String adder) {
-        Log.v("test", etResult.getText().toString());
-        if (etResult.getText().toString().equals("0")) {
+        if (flagNew) {
             etResult.setText(adder);
+            flagNew = false;
         } else {
-            etResult.setText(etResult.getText() + adder);
+            String result = etResult.getText() + adder;
+            etResult.setText(removeLeadingZeros(result));
         }
     }
 
-    public void number1(View view) {
+    public void addNumber1(View view) {
         addToEditText("1");
     }
 
-    public void number2(View view) {
+    public void addNumber2(View view) {
         addToEditText("2");
     }
 
-    public void number3(View view) {
+    public void addNumber3(View view) {
         addToEditText("3");
     }
 
-    public void number4(View view) {
+    public void addNumber4(View view) {
         addToEditText("4");
     }
 
-    public void number5(View view) {
+    public void addNumber5(View view) {
         addToEditText("5");
     }
 
-    public void number6(View view) {
+    public void addNumber6(View view) {
         addToEditText("6");
     }
 
-    public void number7(View view) {
+    public void addNumber7(View view) {
         addToEditText("7");
     }
 
-    public void number8(View view) {
+    public void addNumber8(View view) {
         addToEditText("8");
     }
 
-    public void number9(View view) {
+    public void addNumber9(View view) {
         addToEditText("9");
     }
 
-    public void number0(View view) {
+    public void addNumber0(View view) {
         addToEditText("0");
     }
 
@@ -101,46 +87,98 @@ public class MainActivity extends AppCompatActivity {
         addToEditText(".");
     }
 
-    public void result(View view) {
-    }
-
-
-    public void operationTambah(View view) {
-        if (lastNumber == 0) {
-            lastNumber = Double.parseDouble(etResult.getText().toString());
-            etResult.setText("0");
-        } else {
-            if (currentNumber == 0) {
-                currentNumber = Double.parseDouble(etResult.getText().toString());
-            }
+    public void showResult(View view) {
+        double secondNumber = Double.parseDouble(etResult.getText().toString());
+        if (flagAdd) {
+            firstNumber += secondNumber;
+            flagAdd = false;
         }
-
-        double result = lastNumber + currentNumber;
-        etResult.setText(result + "");
+        if (flagSubtract) {
+            firstNumber -= secondNumber;
+            flagSubtract = false;
+        }
+        if (flagMultiply) {
+            firstNumber *= secondNumber;
+            flagMultiply = false;
+        }
+        if (flagDivide) {
+            firstNumber /= secondNumber;
+            flagDivide = false;
+        }
+        etResult.setText(formatResult(firstNumber));
+        flagNew = true;
     }
 
-    public void operationKurang(View view) {
+    public void doAdd(View view) {
+        flagAdd = true;
+        if (flagFirstNumber) {
+            firstNumber = Double.parseDouble(etResult.getText().toString());
+            flagFirstNumber = false;
+        } else {
+            showResult(null);
+        }
+        flagNew = true;
     }
 
-    public void operationKali(View view) {
+    public void doSubstract(View view) {
+        flagSubtract = true;
+        if (flagFirstNumber) {
+            firstNumber = Double.parseDouble(etResult.getText().toString());
+            flagFirstNumber = false;
+        } else {
+            showResult(null);
+        }
+        flagNew = true;
     }
 
-    public void operationBagi(View view) {
+    public void doMultiply(View view) {
+        flagMultiply = true;
+        if (flagNew) {
+            firstNumber = Double.parseDouble(etResult.getText().toString());
+            flagFirstNumber = false;
+        } else {
+            showResult(null);
+        }
+        flagNew = true;
     }
 
-    public void clear(View view) {
-        lastNumber = 0;
-        currentNumber = 0;
+    public void doDivide(View view) {
+        flagDivide = true;
+        if (flagNew) {
+            firstNumber = Double.parseDouble(etResult.getText().toString());
+            flagFirstNumber = false;
+        } else {
+            showResult(null);
+        }
+        flagNew = true;
+    }
+
+    public void doC(View view) {
+//        secondNumber = 0;
+        etResult.setText("0");
+    }
+
+    public void doAC(View view) {
+        firstNumber = 0;
+        flagFirstNumber = true;
+        flagNew = true;
         etResult.setText("0");
     }
 
     /**
      * format result with 2 numbers after dot
+     * or the original result without dot if the result ends with .00
+     *
      * @param number to format
      * @return a formatted number
      */
     private String formatResult(double number) {
         NumberFormat formatter = new DecimalFormat("#0.00");
-        return formatter.format(number);
+        String returnString = formatter.format(number);
+        return returnString.endsWith(".00") ? returnString.split("\\.")[0] : returnString;
+    }
+
+    private String removeLeadingZeros(String input) {
+        return input.replaceFirst("^0+(?!$)", "");
     }
 }
